@@ -4,8 +4,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from dash import Input, Output
 
-from app.config import (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, MAP_CENTER,
-                        TABLE_NAME)
+from app.config import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, MAP_CENTER, TABLE_NAME
 from app.data import DynamoDBTableHandler
 
 db_handler = DynamoDBTableHandler(TABLE_NAME, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
@@ -36,25 +35,19 @@ def register_callbacks(app):
         df = pd.DataFrame(data)
         if df.empty:
             df = pd.DataFrame(
-                columns=["city", "parameter", "unit", "latitude", "longitude", "value"]
+                columns=["city", "latitude", "longitude", "stringified_data"]
             )
-        # TODO: remove tooltip trace name
-        # TODO: combine parameters into one trace
+        else:
+            df = stringify_data(df)
         fig = go.Figure(
             data=[
                 go.Scattermapbox(
                     lat=df["latitude"],
                     lon=df["longitude"],
                     mode="markers",
-                    hovertemplate="<br>".join(
-                        [
-                            "City: %{customdata[0]}",
-                            "Parameter: %{customdata[1]}",
-                            "Value: %{customdata[2]}",
-                            "Unit: %{customdata[3]}",
-                        ]
-                    ),
-                    customdata=df[["city", "parameter", "value", "unit"]].values,
+                    hovertemplate="<b>%{customdata[0]}</b><br>%{customdata[1]}<extra></extra>",
+                    customdata=df[["city", "stringified_data"]].values,
+                    marker=dict(size=10),
                 )
             ],
             layout=go.Layout(
@@ -63,7 +56,6 @@ def register_callbacks(app):
                     zoom=7,
                     center=MAP_CENTER,
                 ),
-                height=400,
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
                 showlegend=False,
             ),
@@ -79,3 +71,17 @@ def register_callbacks(app):
                 font=dict(size=50),
             )
         return fig
+
+
+def stringify_data(df: pd.DataFrame) -> pd.DataFrame:
+    df = (
+        df.groupby(["city", "latitude", "longitude"])
+        .apply(
+            lambda x: "<br>".join(
+                f"{row['parameter']}: {row['value']:.2f} {row['unit']}"
+                for _, row in x.iterrows()
+            )
+        )
+        .reset_index(name="stringified_data")
+    )
+    return df

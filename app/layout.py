@@ -56,7 +56,7 @@ def layout():
                                             {"label": "12", "value": "12"},
                                             {"label": "24", "value": "24"},
                                         ],
-                                        value="3",
+                                        value="12",
                                         style={
                                             "width": "50px",
                                             "display": "inline-block",
@@ -97,6 +97,7 @@ def layout():
                                         "mapbox": {
                                             "center": MAP_CENTER,
                                             "zoom": 7,
+                                            "style": "open-street-map",
                                         },
                                         "margin": {"r": 0, "t": 0, "l": 0, "b": 0},
                                     }
@@ -109,10 +110,10 @@ def layout():
                     ),
                     dbc.Col(
                         [
-                            # TODO: add parent column city
                             AgGrid(
                                 id="data-table",
                                 rowData=[],
+                                defaultColDef=COLUMN_DEFS,
                                 columnDefs=COLUMN_DEFS,
                                 dashGridOptions={
                                     "pagination": True,
@@ -120,7 +121,6 @@ def layout():
                                 },
                                 className="ag-theme-alpine",
                                 style={"height": "600px", "width": "100%"},
-                                columnSize="autoSize",
                             ),
                         ],
                         width=6,
