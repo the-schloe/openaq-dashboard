@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 
 import boto3
+import pandas as pd
 
 
 class DynamoDBTableHandler:
@@ -19,10 +20,9 @@ class DynamoDBTableHandler:
         )
         self.table = self.dynamodb.Table(table_name)
 
-    # TODO: add aggregation via dropdown
-    def get_all_items(self) -> list[dict]:
+    def _get_all_items(self, hours: int = 3) -> list[dict]:
         now = datetime.now(timezone.utc)
-        n_hours_ago = now - timedelta(hours=12)
+        n_hours_ago = now - timedelta(hours=hours)
 
         response = self.table.scan(
             FilterExpression="#ts >= :min_ts",
@@ -31,3 +31,30 @@ class DynamoDBTableHandler:
         )
         items = response.get("Items", [])
         return items
+
+    def get_aggregated_items(
+        self, hours: int = 3, aggregation: str = "maximum"
+    ) -> pd.DataFrame:
+        items = self._get_all_items(hours=hours)
+
+        df = pd.DataFrame(items)
+        if df.empty:
+            return pd.DataFrame(
+                columns=["city", "parameter", "unit", "latitude", "longitude", "value"]
+            )
+
+        df["latitude"] = df["latitude"].astype(float)
+        df["longitude"] = df["longitude"].astype(float)
+        df["value"] = df["value"].astype(float)
+
+        cols_to_keep = ["city", "parameter", "unit", "latitude", "longitude"]
+        if aggregation == "maximum":
+            df = df.groupby(cols_to_keep)["value"].max().reset_index()
+        elif aggregation == "minimum":
+            df = df.groupby(cols_to_keep)["value"].min().reset_index()
+        elif aggregation == "average":
+            df = df.groupby(cols_to_keep)["value"].mean().reset_index()
+        else:
+            raise ValueError(f"Invalid aggregation type: {aggregation}")
+
+        return df

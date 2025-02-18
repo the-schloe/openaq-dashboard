@@ -22,9 +22,52 @@ def layout():
                                 "Belgium Air Quality Data", className="text-center mb-4"
                             ),
                             html.Div(
+                                [
+                                    dcc.Dropdown(
+                                        id="aggregation-type",
+                                        options=[
+                                            {"label": "Maximum", "value": "maximum"},
+                                            {"label": "Minimum", "value": "minimum"},
+                                            {"label": "Average", "value": "average"},
+                                        ],
+                                        value="average",
+                                        style={
+                                            "width": "120px",
+                                            "display": "inline-block",
+                                        },
+                                    ),
+                                    html.Span(
+                                        " values within the last ",
+                                        style={"margin": "0 10px"},
+                                    ),
+                                    dcc.Dropdown(
+                                        id="time-window",
+                                        options=[
+                                            {"label": "3", "value": "3"},
+                                            {"label": "6", "value": "6"},
+                                            {"label": "12", "value": "12"},
+                                            {"label": "24", "value": "24"},
+                                        ],
+                                        value="3",
+                                        style={
+                                            "width": "80px",
+                                            "display": "inline-block",
+                                        },
+                                    ),
+                                    html.Span(" hours", style={"margin-left": "10px"}),
+                                ],
+                                style={
+                                    "textAlign": "center",
+                                    "marginBottom": "20px",
+                                    "display": "flex",
+                                    "justifyContent": "center",
+                                    "alignItems": "center",
+                                },
+                            ),
+                            html.Div(
                                 "Last updated: Never",
                                 id="last-update-time",
-                                className="text-muted mb-3",
+                                className="text-muted mb-3 text-end",
                             ),
                         ]
                     )

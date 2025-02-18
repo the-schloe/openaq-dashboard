@@ -12,8 +12,6 @@ AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 MAP_CENTER = {"lat": 50.8503, "lon": 4.3517}
 
 COLUMN_DEFS = [
-    {"headerName": "Timestamp", "field": "timestamp"},
-    {"headerName": "Country", "field": "country"},
     {"headerName": "City", "field": "city"},
     {"headerName": "Parameter", "field": "parameter"},
     {"headerName": "Unit", "field": "unit"},
