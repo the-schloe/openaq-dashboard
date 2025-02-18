@@ -2,7 +2,7 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html
 from dash_ag_grid import AgGrid
 
-from app.config import COLUMN_DEFS
+from app.config import COLUMN_DEFS, MAP_CENTER
 
 
 def layout():
@@ -26,22 +26,52 @@ def layout():
                                 id="last-update-time",
                                 className="text-muted mb-3",
                             ),
+                        ]
+                    )
+                ]
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(
+                        [
+                            dcc.Graph(
+                                id="map-plot",
+                                style={"height": "400px"},
+                                figure={
+                                    "layout": {
+                                        "mapbox": {
+                                            "center": MAP_CENTER,
+                                            "zoom": 6,
+                                        },
+                                        "margin": {"r": 0, "t": 0, "l": 0, "b": 0},
+                                    }
+                                },
+                                config={"scrollZoom": True, "displayModeBar": False},
+                            )
+                        ],
+                        width=6,
+                        className="mb-4",
+                    ),
+                    dbc.Col(
+                        [
+                            # TODO: add parent column city
                             AgGrid(
                                 id="data-table",
-                                rowData=[],  # to be populated by callback
+                                rowData=[],
                                 columnDefs=COLUMN_DEFS,
                                 dashGridOptions={
                                     "pagination": True,
                                     "paginationAutoPageSize": True,
                                 },
                                 className="ag-theme-alpine",
-                                style={"height": "600px", "width": "100%"},
+                                style={"height": "400px", "width": "100%"},
                                 columnSize="autoSize",
                             ),
-                        ]
-                    )
+                        ],
+                        width=6,
+                    ),
                 ]
-            )
+            ),
         ],
         fluid=True,
     )

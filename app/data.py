@@ -19,6 +19,7 @@ class DynamoDBTableHandler:
         )
         self.table = self.dynamodb.Table(table_name)
 
+    # TODO: add aggregation via dropdown
     def get_all_items(self) -> list[dict]:
         now = datetime.now(timezone.utc)
         n_hours_ago = now - timedelta(hours=12)
