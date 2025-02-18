@@ -18,9 +18,8 @@ def layout():
                                 interval=10 * 1000,
                                 n_intervals=0,
                             ),
-                            html.H1(
-                                "Belgium Air Quality Data", className="text-center m-2"
-                            ),
+                            html.H1("Air Quality Data", className="text-center m-2"),
+                            html.Hr(className="mb-4"),
                         ]
                     )
                 ]
@@ -56,7 +55,7 @@ def layout():
                                             {"label": "12", "value": "12"},
                                             {"label": "24", "value": "24"},
                                         ],
-                                        value="12",
+                                        value="3",
                                         style={
                                             "width": "50px",
                                             "display": "inline-block",
@@ -72,19 +71,10 @@ def layout():
                                 },
                             ),
                         ],
-                        width=3,
-                    ),
-                    dbc.Col(
-                        [
-                            html.Div(
-                                "Last updated: Never",
-                                id="last-update-time",
-                                className="text-muted mb-3 text-end",
-                            ),
-                        ]
                     ),
                 ],
             ),
+            html.Hr(className="mb-4"),
             dbc.Row(
                 [
                     dbc.Col(
@@ -126,6 +116,21 @@ def layout():
                         width=6,
                     ),
                 ]
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(
+                        [
+                            html.Div(
+                                "Last updated: Never",
+                                id="last-update-time",
+                                className="text-muted text-end",
+                            ),
+                        ],
+                        width=12,
+                    ),
+                ],
+                className="mt-3",
             ),
         ],
         fluid=True,
