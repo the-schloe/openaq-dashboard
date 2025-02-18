@@ -19,8 +19,16 @@ def layout():
                                 n_intervals=0,
                             ),
                             html.H1(
-                                "Belgium Air Quality Data", className="text-center mb-4"
+                                "Belgium Air Quality Data", className="text-center m-2"
                             ),
+                        ]
+                    )
+                ]
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(
+                        [
                             html.Div(
                                 [
                                     dcc.Dropdown(
@@ -32,7 +40,7 @@ def layout():
                                         ],
                                         value="average",
                                         style={
-                                            "width": "120px",
+                                            "width": "100px",
                                             "display": "inline-block",
                                         },
                                     ),
@@ -50,28 +58,32 @@ def layout():
                                         ],
                                         value="3",
                                         style={
-                                            "width": "80px",
+                                            "width": "50px",
                                             "display": "inline-block",
                                         },
                                     ),
-                                    html.Span(" hours", style={"margin-left": "10px"}),
+                                    html.Span(" hours.", style={"margin-left": "10px"}),
                                 ],
                                 style={
                                     "textAlign": "center",
-                                    "marginBottom": "20px",
                                     "display": "flex",
                                     "justifyContent": "center",
                                     "alignItems": "center",
                                 },
                             ),
+                        ],
+                        width=3,
+                    ),
+                    dbc.Col(
+                        [
                             html.Div(
                                 "Last updated: Never",
                                 id="last-update-time",
                                 className="text-muted mb-3 text-end",
                             ),
                         ]
-                    )
-                ]
+                    ),
+                ],
             ),
             dbc.Row(
                 [
@@ -79,12 +91,12 @@ def layout():
                         [
                             dcc.Graph(
                                 id="map-plot",
-                                style={"height": "400px"},
+                                style={"height": "600px"},
                                 figure={
                                     "layout": {
                                         "mapbox": {
                                             "center": MAP_CENTER,
-                                            "zoom": 6,
+                                            "zoom": 7,
                                         },
                                         "margin": {"r": 0, "t": 0, "l": 0, "b": 0},
                                     }
@@ -107,7 +119,7 @@ def layout():
                                     "paginationAutoPageSize": True,
                                 },
                                 className="ag-theme-alpine",
-                                style={"height": "400px", "width": "100%"},
+                                style={"height": "600px", "width": "100%"},
                                 columnSize="autoSize",
                             ),
                         ],

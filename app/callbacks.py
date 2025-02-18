@@ -4,7 +4,8 @@ import pandas as pd
 import plotly.graph_objects as go
 from dash import Input, Output
 
-from app.config import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, MAP_CENTER, TABLE_NAME
+from app.config import (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, MAP_CENTER,
+                        TABLE_NAME)
 from app.data import DynamoDBTableHandler
 
 db_handler = DynamoDBTableHandler(TABLE_NAME, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
@@ -37,6 +38,8 @@ def register_callbacks(app):
             df = pd.DataFrame(
                 columns=["city", "parameter", "unit", "latitude", "longitude", "value"]
             )
+        # TODO: remove tooltip trace name
+        # TODO: combine parameters into one trace
         fig = go.Figure(
             data=[
                 go.Scattermapbox(
@@ -57,7 +60,7 @@ def register_callbacks(app):
             layout=go.Layout(
                 mapbox=dict(
                     style="open-street-map",
-                    zoom=6,
+                    zoom=7,
                     center=MAP_CENTER,
                 ),
                 height=400,
