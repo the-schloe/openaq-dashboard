@@ -1,5 +1,5 @@
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import dcc, html
 from dash_ag_grid import AgGrid
 
 from app.config import COLUMN_DEFS
@@ -12,19 +12,24 @@ def layout():
                 [
                     dbc.Col(
                         [
+                            dcc.Store(id="data-store"),
+                            dcc.Interval(
+                                id="interval-component",
+                                interval=10 * 1000,
+                                n_intervals=0,
+                            ),
                             html.H1(
                                 "Belgium Air Quality Data", className="text-center mb-4"
                             ),
-                            dbc.Button(
-                                "Refresh Data",
-                                id="refresh-button",
-                                color="primary",
-                                className="mb-3",
+                            html.Div(
+                                "Last updated: Never",
+                                id="last-update-time",
+                                className="text-muted mb-3",
                             ),
                             AgGrid(
                                 id="data-table",
-                                rowData=[],  # tol be populated by callback
-                                columnDefs=COLUMN_DEFS,  # Define your column definitions based on your DynamoDB table structure
+                                rowData=[],  # to be populated by callback
+                                columnDefs=COLUMN_DEFS,
                                 dashGridOptions={
                                     "pagination": True,
                                     "paginationAutoPageSize": True,
