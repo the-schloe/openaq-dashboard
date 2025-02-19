@@ -24,7 +24,11 @@ def register_callbacks(app):
         df = db_handler.get_aggregated_items(hours=hours, aggregation=aggregation_type)
         current_time = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S") + " UTC"
         # Note: store needs json serializable data, so we convert the dataframe to a list of dictionaries
-        return df.to_dict("records"), f"Last updated: {current_time}"
+        total_records = df["count"].sum() if not df.empty else 0
+        return (
+            df.to_dict("records"),
+            f"Last updated: {current_time} | Total measurements in timeframe: {total_records}",
+        )
 
     @app.callback(Output("data-table", "rowData"), Input("data-store", "data"))
     def update_table(data):

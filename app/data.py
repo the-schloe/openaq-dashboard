@@ -24,14 +24,27 @@ class DynamoDBTableHandler:
         now = datetime.now(timezone.utc)
         n_hours_ago = now - timedelta(hours=hours)
 
-        response = self.table.scan(
-            FilterExpression="#ts >= :min_ts",
-            ExpressionAttributeNames={"#ts": "timestamp"},
-            ExpressionAttributeValues={
-                ":min_ts": n_hours_ago.strftime("%Y-%m-%d %H:%M:%S.%f")
-            },
-        )
-        items = response.get("Items", [])
+        items = []
+        last_evaluated_key = None
+
+        while True:
+            scan_kwargs = {
+                "FilterExpression": "#ts >= :min_ts",
+                "ExpressionAttributeNames": {"#ts": "timestamp"},
+                "ExpressionAttributeValues": {
+                    ":min_ts": n_hours_ago.strftime("%Y-%m-%d %H:%M:%S.%f")
+                },
+            }
+
+            if last_evaluated_key:
+                scan_kwargs["ExclusiveStartKey"] = last_evaluated_key
+
+            response = self.table.scan(**scan_kwargs)
+            items.extend(response.get("Items", []))
+
+            last_evaluated_key = response.get("LastEvaluatedKey")
+            if not last_evaluated_key:
+                break
         return items
 
     def get_aggregated_items(
@@ -52,7 +65,6 @@ class DynamoDBTableHandler:
         cols_to_keep = ["city", "parameter", "unit", "latitude", "longitude"]
 
         counts = df.groupby(cols_to_keep).size().reset_index(name="count")
-        print(f"Total records: {len(df)}")
 
         if aggregation == "maximum":
             df = df.groupby(cols_to_keep)["value"].max().reset_index()
