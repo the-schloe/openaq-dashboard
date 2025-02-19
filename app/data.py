@@ -27,7 +27,9 @@ class DynamoDBTableHandler:
         response = self.table.scan(
             FilterExpression="#ts >= :min_ts",
             ExpressionAttributeNames={"#ts": "timestamp"},
-            ExpressionAttributeValues={":min_ts": n_hours_ago.isoformat()},
+            ExpressionAttributeValues={
+                ":min_ts": n_hours_ago.strftime("%Y-%m-%d %H:%M:%S.%f")
+            },
         )
         items = response.get("Items", [])
         return items
@@ -48,6 +50,10 @@ class DynamoDBTableHandler:
         df["value"] = df["value"].astype(float)
 
         cols_to_keep = ["city", "parameter", "unit", "latitude", "longitude"]
+
+        counts = df.groupby(cols_to_keep).size().reset_index(name="count")
+        print(f"Total records: {len(df)}")
+
         if aggregation == "maximum":
             df = df.groupby(cols_to_keep)["value"].max().reset_index()
         elif aggregation == "minimum":
@@ -57,4 +63,5 @@ class DynamoDBTableHandler:
         else:
             raise ValueError(f"Invalid aggregation type: {aggregation}")
 
+        df = df.merge(counts, on=cols_to_keep)
         return df

@@ -2,7 +2,7 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html
 from dash_ag_grid import AgGrid
 
-from app.config import COLUMN_DEFS, MAP_CENTER
+from app.config import COLUMN_DEFS, MAP_CENTER, UPDATE_RATE
 
 
 def layout():
@@ -15,7 +15,7 @@ def layout():
                             dcc.Store(id="data-store"),
                             dcc.Interval(
                                 id="interval-component",
-                                interval=10 * 1000,
+                                interval=UPDATE_RATE,
                                 n_intervals=0,
                             ),
                             html.H1("Air Quality Data", className="text-center m-2"),
@@ -103,7 +103,6 @@ def layout():
                             AgGrid(
                                 id="data-table",
                                 rowData=[],
-                                defaultColDef=COLUMN_DEFS,
                                 columnDefs=COLUMN_DEFS,
                                 dashGridOptions={
                                     "pagination": True,

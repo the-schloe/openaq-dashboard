@@ -78,8 +78,10 @@ def stringify_data(df: pd.DataFrame) -> pd.DataFrame:
         df.groupby(["city", "latitude", "longitude"])
         .apply(
             lambda x: "<br>".join(
-                f"{row['parameter']}: {row['value']:.2f} {row['unit']}"
-                for _, row in x.iterrows()
+                [
+                    f"{row['parameter']}: {row['value']:.2f} {row['unit']} ({row['count']} records)"
+                    for _, row in x.iterrows()
+                ]
             )
         )
         .reset_index(name="stringified_data")
