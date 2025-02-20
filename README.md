@@ -8,7 +8,7 @@ A real-time dashboard displaying air quality measurements.
 - Data table with detailed readings
 - Configurable time window (3-24 hours)
 - Multiple aggregation options (maximum, minimum, average)
-- Auto-refresh every 10 seconds
+- Auto-refresh every 60 seconds
 
 ## Prerequisites
 

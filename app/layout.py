@@ -22,7 +22,8 @@ def layout():
                                 color="darkslateblue",
                                 children=[dcc.Store(id="data-store")],
                                 type="default",
-                                className="m-4",
+                                fullscreen=True,
+                                style={"backgroundColor": "#272b30"},
                             ),
                         ]
                     )
@@ -96,6 +97,79 @@ def layout():
                 [
                     dbc.Col(
                         [
+                            dbc.Card(
+                                [
+                                    dbc.CardBody(
+                                        [
+                                            html.H5(
+                                                "Last Update", className="card-title"
+                                            ),
+                                            html.P(
+                                                "Never",
+                                                id="last-update-time",
+                                                className="card-text",
+                                            ),
+                                        ]
+                                    )
+                                ],
+                                className="text-center h-100",
+                            )
+                        ],
+                        width=4,
+                    ),
+                    dbc.Col(
+                        [
+                            dbc.Card(
+                                [
+                                    dbc.CardBody(
+                                        [
+                                            html.H5(
+                                                "Total Number of Measurements in Timeframe",
+                                                className="card-title",
+                                            ),
+                                            html.P(
+                                                "0",
+                                                id="record-count",
+                                                className="card-text",
+                                            ),
+                                        ]
+                                    )
+                                ],
+                                className="text-center h-100",
+                            )
+                        ],
+                        width=4,
+                    ),
+                    dbc.Col(
+                        [
+                            dbc.Card(
+                                [
+                                    dbc.CardBody(
+                                        [
+                                            html.H5(
+                                                "Number of Cities",
+                                                className="card-title",
+                                            ),
+                                            html.P(
+                                                "0",
+                                                id="city-count",
+                                                className="card-text",
+                                            ),
+                                        ]
+                                    )
+                                ],
+                                className="text-center h-100",
+                            )
+                        ],
+                        width=4,
+                    ),
+                ],
+                className="mb-4",
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(
+                        [
                             dcc.Loading(
                                 id="loading-map",
                                 color="darkslateblue",
@@ -152,7 +226,7 @@ def layout():
                                             "pagination": True,
                                             "paginationAutoPageSize": True,
                                         },
-                                        className="ag-theme-quartz-dark",
+                                        className="ag-theme-alpine-dark",
                                         style={
                                             "height": "600px",
                                             "width": "100%",
@@ -165,21 +239,6 @@ def layout():
                         width=6,
                     ),
                 ]
-            ),
-            dbc.Row(
-                [
-                    dbc.Col(
-                        [
-                            html.Div(
-                                "Last updated: Never",
-                                id="last-update-time",
-                                className="text-muted text-end",
-                            ),
-                        ],
-                        width=12,
-                    ),
-                ],
-                className="mt-3",
             ),
         ],
         fluid=True,

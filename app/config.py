@@ -8,8 +8,8 @@ TABLE_NAME = os.getenv("TABLE_NAME")
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 
-UPDATE_RATE = 10 * 1000  # 10 seconds
-MAP_CENTER = {"lat": 50.8503, "lon": 4.3517}
+UPDATE_RATE = 60 * 1000  # 60 seconds
+MAP_CENTER = {"lat": 50.5303, "lon": 4.3517}
 
 COLUMN_DEFS = [
     {"headerName": "City", "field": "city", "width": 200},

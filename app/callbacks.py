@@ -12,7 +12,12 @@ db_handler = DynamoDBTableHandler(TABLE_NAME, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCE
 
 def register_callbacks(app):
     @app.callback(
-        [Output("data-store", "data"), Output("last-update-time", "children")],
+        [
+            Output("data-store", "data"),
+            Output("last-update-time", "children"),
+            Output("record-count", "children"),
+            Output("city-count", "children"),
+        ],
         [
             Input("interval-component", "n_intervals"),
             Input("aggregation-type", "value"),
@@ -27,7 +32,9 @@ def register_callbacks(app):
         total_records = df["count"].sum() if not df.empty else 0
         return (
             df.to_dict("records"),
-            f"Last updated: {current_time} | Total measurements in timeframe: {total_records}",
+            f"{current_time}",
+            total_records,
+            f"{len(df['city'].unique())}",
         )
 
     @app.callback(Output("data-table", "rowData"), Input("data-store", "data"))
