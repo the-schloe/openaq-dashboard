@@ -41,8 +41,11 @@ def register_callbacks(app):
     def update_table(data):
         return data
 
-    @app.callback(Output("map-plot", "figure"), Input("data-store", "data"))
-    def update_map(data):
+    @app.callback(
+        Output("map-plot", "figure"),
+        [Input("data-store", "data"), Input("data-table", "cellClicked")],
+    )
+    def update_map(data, cell_clicked):
         df = pd.DataFrame(data)
         if df.empty:
             df = pd.DataFrame(
@@ -50,17 +53,43 @@ def register_callbacks(app):
             )
         else:
             df = stringify_data(df)
-        fig = go.Figure(
-            data=[
-                go.Scattermap(
-                    lat=df["latitude"],
-                    lon=df["longitude"],
-                    mode="markers",
-                    hovertemplate="<b>%{customdata[0]}</b><br>%{customdata[1]}<extra></extra>",
-                    customdata=df[["city", "stringified_data"]].values,
-                    marker=dict(size=10, color="darkslateblue"),
+
+        selected_city = None
+        if cell_clicked and cell_clicked["colId"] == "city":
+            selected_city = cell_clicked["value"]
+
+        traces = []
+
+        mask = df["city"] != selected_city if selected_city else slice(None)
+        traces.append(
+            go.Scattermap(
+                lat=df.loc[mask, "latitude"],
+                lon=df.loc[mask, "longitude"],
+                mode="markers",
+                hovertemplate="<b>%{customdata[0]}</b><br>%{customdata[1]}<extra></extra>",
+                customdata=df.loc[mask, ["city", "stringified_data"]].values,
+                marker=dict(size=10, color="darkslateblue"),
+                name="Cities",
+            )
+        )
+
+        if selected_city and not df.empty:
+            selected_df = df[df["city"] == selected_city]
+            if not selected_df.empty:
+                traces.append(
+                    go.Scattermap(
+                        lat=selected_df["latitude"],
+                        lon=selected_df["longitude"],
+                        mode="markers",
+                        hovertemplate="<b>%{customdata[0]}</b><br>%{customdata[1]}<extra></extra>",
+                        customdata=selected_df[["city", "stringified_data"]].values,
+                        marker=dict(size=15, color="mediumspringgreen"),
+                        name="Selected City",
+                    )
                 )
-            ],
+
+        fig = go.Figure(
+            data=traces,
             layout=go.Layout(
                 map=dict(
                     style="dark",
@@ -71,6 +100,7 @@ def register_callbacks(app):
                 showlegend=False,
             ),
         )
+
         if df.empty:
             fig.add_annotation(
                 text="No data!",
