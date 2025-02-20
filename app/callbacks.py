@@ -45,18 +45,18 @@ def register_callbacks(app):
             df = stringify_data(df)
         fig = go.Figure(
             data=[
-                go.Scattermapbox(
+                go.Scattermap(
                     lat=df["latitude"],
                     lon=df["longitude"],
                     mode="markers",
                     hovertemplate="<b>%{customdata[0]}</b><br>%{customdata[1]}<extra></extra>",
                     customdata=df[["city", "stringified_data"]].values,
-                    marker=dict(size=10),
+                    marker=dict(size=10, color="darkslateblue"),
                 )
             ],
             layout=go.Layout(
-                mapbox=dict(
-                    style="open-street-map",
+                map=dict(
+                    style="dark",
                     zoom=7,
                     center=MAP_CENTER,
                 ),

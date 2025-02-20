@@ -5,7 +5,12 @@ from app.callbacks import register_callbacks
 from app.layout import layout
 
 app = Dash(
-    __name__, external_stylesheets=[dbc.themes.MINTY], title="Air Quality Dashboard"
+    __name__,
+    external_stylesheets=[
+        dbc.themes.SLATE,
+        "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css",
+    ],
+    title="Air Quality Dashboard",
 )
 app.layout = layout
 
